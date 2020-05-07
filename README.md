@@ -1,2 +1,4 @@
-# LifeGame  [![Build Status](https://travis-ci.org/MrMati/LifeGame.svg?branch=master)](https://travis-ci.org/MrMati/LifeGame)
+# LifeGame  ![MrMati](https://circleci.com/gh/MrMati/LifeGame.svg?style=shield)
 Simple Life Game with JUnit tests
+
+
