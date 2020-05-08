@@ -1,7 +1,12 @@
 version: 2.1 # use CircleCI 2.0
 jobs: # a collection of steps
   build: # runs not using Workflows must have a `build` job as entry point
-    
+    parallelism: 1
+    environment:
+      # Configure the JVM and Gradle to avoid OOM errors
+      _JAVA_OPTIONS: "-Xmx3g"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=4"
+
     working_directory: ~/circleci-demo # directory where steps will run
 
     docker: # run the steps with Docker
@@ -10,29 +15,43 @@ jobs: # a collection of steps
     steps: # a collection of executable commands
 
       - checkout # check out source code to working directory
-      
+
       - run:
           name: Setup NodeJS
           command: sudo curl -sL https://deb.nodesource.com/setup_10.x |  sudo bash -
 
-      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
-          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
-          key: circleci-demo-{{ checksum "pom.xml" }}
-      
-      - run: mvn dependency:go-offline # gets the project dependencies
-      
-      - save_cache: # saves the project dependencies
+      - restore_cache:
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - restore_cache:
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+
+      - run:
+          name: Enable execution for gradlew
+          command: chmod +x gradlew
+
+      - run:
+          name: Gradle generate pom for Maven
+          command: ./gradlew install
+
+      - run:
+          name: Maven download depedencies
+          command: mvn -f build/poms/pom-default.xml dependency:go-offline
+
+      - save_cache:
           paths:
-            - ~/.m2
-          key: circleci-{{ checksum "pom.xml" }}
-      
-      - run: mvn package # run the actual tests
-      
-      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard. 
-      # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: target/surefire-reports
-      
+            - ~/.gradle/wrapper
+          key: v1-gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
+      - save_cache:
+          paths:
+            - ~/.gradle/caches
+          key: v1-gradle-cache-{{ checksum "build.gradle" }}
+
+      - run:
+          name: Run Gradle test
+          command: ./gradlew test
+
+      - store_test_results:
+          path: build/test-results/test/
+
       - store_artifacts: # store the uberjar as an artifact
-      # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
-          path: target/LifeGame-1.0.0.jar
-      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples 
+          path: build/libs/

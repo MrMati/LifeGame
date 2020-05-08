@@ -1,9 +1,10 @@
-import org.junit.jupiter.api.Assertions;
-import pl.mati.lifegame.Board;
+package pl.mati.lifegame;
 
-public class Test {
+import org.junit.jupiter.api.Assertions;
+
+class Test {
     @org.junit.jupiter.api.Test
-    public void testCreate() {
+    void testCreate() {
 
         int width = 10;
         int height = 10;
@@ -18,7 +19,7 @@ public class Test {
     }
 
     @org.junit.jupiter.api.Test
-    public void testSetValue() {
+    void testSetValue() {
         Board board = new Board(10, 10);
         board.setCellValue(5, 5, true);
         Assertions.assertTrue(board.getCellValue(5, 5));
@@ -37,7 +38,7 @@ public class Test {
     }
 
     @org.junit.jupiter.api.Test
-    public void testDieLonely() {
+    void testDieLonely() {
 
         // zero sasiadow
         Board board = new Board(5, 5);
@@ -57,7 +58,7 @@ public class Test {
     }
 
     @org.junit.jupiter.api.Test
-    public void testSurvive() {
+    void testSurvive() {
 
         // dwoch sasiadow
         Board board2 = new Board(5, 5);
@@ -76,12 +77,12 @@ public class Test {
         board3.setCellValue(1, 1, true);
         Assertions.assertEquals(3, board3.countAliveNeighbours(0, 0));
         board3.nextCycle();
-        Assertions.assertEquals(true, board3.getCellValue(0, 0));
+        Assertions.assertTrue(board3.getCellValue(0, 0));
 
     }
 
     @org.junit.jupiter.api.Test
-    public void testDieOverpopulation() {
+    void testDieOverpopulation() {
 
         // czterech sasiadow
         Board board = new Board(5, 5);
@@ -97,7 +98,7 @@ public class Test {
     }
 
     @org.junit.jupiter.api.Test
-    public void testResurrection() {
+    void testResurrection() {
 
         Board board = new Board(5, 5);
         board.setCellValue(2, 2, false);

@@ -4,15 +4,15 @@ public class Cell implements Cloneable {
 
     private boolean alive;
 
-    public Cell(boolean alive) {
+    Cell(boolean alive) {
         this.setAlive(alive);
     }
 
-    public boolean isAlive() {
+    boolean isAlive() {
         return alive;
     }
 
-    public void setAlive(boolean alive) {
+    void setAlive(boolean alive) {
         this.alive = alive;
     }
 
@@ -21,7 +21,7 @@ public class Cell implements Cloneable {
         return new Cell(alive);
     }
 
-    public void changeState(int neighboursCount) {
+    void changeState(int neighboursCount) {
 
         if (alive) {
 

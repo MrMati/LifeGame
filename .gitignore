@@ -1,3 +1,5 @@
 .idea/*
 target/*
 LifeGame.iml
+/build/
+/.gradle/
