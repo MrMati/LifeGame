@@ -1,9 +1,33 @@
 image: "circleci/openjdk:8-jdk-stretch"
 
+stages:
+  - setup
+  - build
+  - test
+
 before_script:
-  - echo Wszystko dziala
+  - chmod +x gradlew
 
 
-rspec:
+setup:
+  stage: setup
   script:
-    - java -version
+  - sudo curl -sL https://deb.nodesource.com/setup_12.x |  sudo bash -
+  - sudo apt-get install -y nodejs
+  - echo "console.log(\"hello world\")" > test.js && node test.js
+
+
+build:
+  stage: build
+  script: ./gradlew assemble
+  artifacts:
+    paths:
+      - build/libs/*.jar
+
+test:
+  stage: test
+  script: ./gradlew test
+  artifacts:
+    reports:
+      junit: build/test-results/test/**/TEST-*.xml
+
