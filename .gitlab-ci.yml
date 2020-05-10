@@ -1,0 +1,9 @@
+image: "circleci/openjdk:8-jdk-stretch"
+
+before_script:
+  - echo Wszystko dziala
+
+
+rspec:
+  script:
+    - java -version
